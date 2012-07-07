@@ -464,6 +464,26 @@ _wrap_objobj2obj(LLVMConstExtractElement, LLVMValueRef, LLVMValueRef, LLVMValueR
 _wrap_objobjobj2obj(LLVMConstInsertElement, LLVMValueRef, LLVMValueRef, LLVMValueRef, LLVMValueRef)
 _wrap_objobjobj2obj(LLVMConstShuffleVector, LLVMValueRef, LLVMValueRef, LLVMValueRef, LLVMValueRef)
 
+/* Inline assembly support */
+
+static PyObject *
+_wLLVMConstInlineAsm(PyObject *self, PyObject *args)
+{
+    PyObject *obj1;
+    const char *_asm, *constraints;
+    LLVMTypeRef ty;
+    int has_side_effects, is_alligned_stack;
+    
+    if (!PyArg_ParseTuple(args, "Ossii", &obj1,
+    						&_asm, &constraints,
+    						&has_side_effects, &is_alligned_stack))
+        return NULL;
+    
+    ty  = ( LLVMTypeRef ) PyCObject_AsVoidPtr(obj1);
+    
+    return ctor_LLVMValueRef(LLVMConstInlineAsm(ty, _asm, constraints,
+    						(LLVMBool)has_side_effects, (LLVMBool)is_alligned_stack));
+}
 
 /*===----------------------------------------------------------------------===*/
 /* Globals                                                                    */
@@ -807,7 +827,7 @@ _wrap_pass( DomViewer )
 _wrap_pass( EdgeProfiler )
 _wrap_pass( FunctionAttrs )
 _wrap_pass( FunctionInlining )
-_wrap_pass( GEPSplitter )
+//_wrap_pass( GEPSplitter )
 _wrap_pass( GlobalDCE )
 _wrap_pass( GlobalOptimizer )
 _wrap_pass( GlobalsModRef )
@@ -822,11 +842,11 @@ _wrap_pass( JumpThreading )
 _wrap_pass( LazyValueInfo )
 _wrap_pass( LCSSA )
 _wrap_pass( LICM )
-_wrap_pass( LiveValues )
+//_wrap_pass( LiveValues )
 _wrap_pass( LoopDeletion )
 _wrap_pass( LoopDependenceAnalysis )
 _wrap_pass( LoopExtractor )
-_wrap_pass( LoopIndexSplit )
+//_wrap_pass( LoopIndexSplit )
 _wrap_pass( LoopRotate )
 _wrap_pass( LoopSimplify )
 _wrap_pass( LoopStrengthReduce )
@@ -841,7 +861,7 @@ _wrap_pass( NoAA )
 _wrap_pass( NoProfileInfo )
 _wrap_pass( OptimalEdgeProfiler )
 _wrap_pass( PartialInlining )
-_wrap_pass( PartialSpecialization )
+//_wrap_pass( PartialSpecialization )
 _wrap_pass( PostDomOnlyPrinter )
 _wrap_pass( PostDomOnlyViewer )
 _wrap_pass( PostDomPrinter )
@@ -855,7 +875,7 @@ _wrap_pass( Reassociate )
 _wrap_pass( ScalarEvolutionAliasAnalysis )
 _wrap_pass( ScalarReplAggregates )
 _wrap_pass( SCCP )
-_wrap_pass( SimplifyHalfPowrLibCalls )
+//_wrap_pass( SimplifyHalfPowrLibCalls )
 _wrap_pass( SimplifyLibCalls )
 _wrap_pass( SingleLoopExtractor )
 _wrap_pass( StripDeadPrototypes )
@@ -1162,7 +1182,7 @@ _wLLVMLoadLibraryPermanently(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
-_wrap_obj2obj(LLVMInlineFunction, LLVMValueRef, int)
+//_wrap_obj2obj(LLVMInlineFunction, LLVMValueRef, int)
 
 /* Expose the void* inside a PyCObject as a PyLong. This allows us to
  * use it as a unique ID. */
@@ -1345,6 +1365,7 @@ static PyMethodDef core_methods[] = {
     _method( LLVMConstExtractElement )    
     _method( LLVMConstInsertElement )    
     _method( LLVMConstShuffleVector )    
+    _method( LLVMConstInlineAsm )    
 
     /* Globals */
 
@@ -1569,7 +1590,7 @@ static PyMethodDef core_methods[] = {
     _pass( EdgeProfiler )
     _pass( FunctionAttrs )
     _pass( FunctionInlining )
-    _pass( GEPSplitter )
+    //_pass( GEPSplitter )
     _pass( GlobalDCE )
     _pass( GlobalOptimizer )
     _pass( GlobalsModRef )
@@ -1584,11 +1605,11 @@ static PyMethodDef core_methods[] = {
     _pass( LazyValueInfo )
     _pass( LCSSA )
     _pass( LICM )
-    _pass( LiveValues )
+    //_pass( LiveValues )
     _pass( LoopDeletion )
     _pass( LoopDependenceAnalysis )
     _pass( LoopExtractor )
-    _pass( LoopIndexSplit )
+    //_pass( LoopIndexSplit )
     _pass( LoopRotate )
     _pass( LoopSimplify )
     _pass( LoopStrengthReduce )
@@ -1603,7 +1624,7 @@ static PyMethodDef core_methods[] = {
     _pass( NoProfileInfo )
     _pass( OptimalEdgeProfiler )
     _pass( PartialInlining )
-    _pass( PartialSpecialization )
+    //_pass( PartialSpecialization )
     _pass( PostDomOnlyPrinter )
     _pass( PostDomOnlyViewer )
     _pass( PostDomPrinter )
@@ -1617,7 +1638,7 @@ static PyMethodDef core_methods[] = {
     _pass( ScalarEvolutionAliasAnalysis )
     _pass( ScalarReplAggregates )
     _pass( SCCP )
-    _pass( SimplifyHalfPowrLibCalls )
+    //_pass( SimplifyHalfPowrLibCalls )
     _pass( SimplifyLibCalls )
     _pass( SingleLoopExtractor )
     _pass( StripDeadPrototypes )
@@ -1672,7 +1693,7 @@ static PyMethodDef core_methods[] = {
     /* Misc */
     _method( LLVMGetIntrinsic )
     _method( LLVMLoadLibraryPermanently )
-    _method( LLVMInlineFunction )
+    //_method( LLVMInlineFunction )
     _method( PyCObjectVoidPtrToPyLong )
 
     { NULL }
